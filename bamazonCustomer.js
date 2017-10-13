@@ -1,8 +1,7 @@
 // Dependencies
 var inquirer = require('inquirer');
 var mysql = require('mysql');
-const readline = require('readline');
-readline.emitKeypressEvents(process.stdin);
+
 
 // MySQL connection parameters
 var connection = mysql.createConnection({
@@ -73,30 +72,23 @@ function userPrompt() {
           })
         } else {
           console.log('\nInsufficient quantity!\n');
-          console.log('Press c to continue.');
-          pressContinue();
+          console.log('Press any key to continue.');
+          reRun();
         }
       }
     })
   })
 }
-function pressContinue() {
-    
-    // without this, we would only get streams once enter is pressed
+
+function reRun(){
     process.stdin.resume();
-    process.stdin.setEncoding( 'utf8' );
-    // on any data into stdin
-    process.stdin.on( 'keypress',( str, key ) => {
-      // ctrl-c ( end of text )
-      
-      if(key.name === 'c'){
-         runBamazon();
-      }
-      else{ return; }
-      // write the key to stdout all normal like
-     
-    });
-};
+    process.stdin.setEncoding('utf8');
+    process.stdin.once('data', function (someCode) {
+      process.stdin.pause();
+      displayItemsForSale();
+    })
+}
+
 
 function runBamazon() {
     displayItemsForSale();
